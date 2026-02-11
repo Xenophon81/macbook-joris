@@ -1,7 +1,3 @@
-Hier is een professionele maar persoonlijke README.md die je direct in je GitHub-repo kunt plaatsen.
-
-Je kunt hem letterlijk kopiëren naar README.md.
-
 💻 Joris Dev Machine
 Linux Mint XFCE Setup Blueprint
 
