@@ -85,6 +85,43 @@ if [ -d "./custom-fonts" ]; then
     fc-cache -f -v
 fi
 
+
+echo "=== Installing Brave ==="
+
+sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg \
+https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] \
+https://brave-browser-apt-release.s3.brave.com/ stable main" | \
+sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+
+sudo apt update
+sudo apt install -y brave-browser
+
+
+
+echo "=== Installing Google Chrome ==="
+
+wget -qO- https://dl.google.com/linux/linux_signing_key.pub | \
+sudo gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
+
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] \
+http://dl.google.com/linux/chrome/deb/ stable main" | \
+sudo tee /etc/apt/sources.list.d/google-chrome.list
+
+sudo apt update
+sudo apt install -y google-chrome-stable
+
+
+
+echo "=== Installing Discord ==="
+
+wget -O discord.deb "https://discord.com/api/download?platform=linux&format=deb"
+sudo apt install -y ./discord.deb
+rm discord.deb
+
+
+
 echo "=== Installing Sublime Text repo (if not installed yet) ==="
 wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | sudo gpg --dearmor -o /usr/share/keyrings/sublimehq.gpg
 echo "deb [signed-by=/usr/share/keyrings/sublimehq.gpg] https://download.sublimetext.com/ apt/stable/" | sudo tee /etc/apt/sources.list.d/sublime-text.list
