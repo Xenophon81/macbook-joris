@@ -1,108 +1,162 @@
 #!/usr/bin/env bash
 set -e
 
-echo "=============================="
-echo " Linux Mint Bootstrap Script"
-echo "=============================="
+echo "======================================"
+echo " Linux Mint Full Desktop Bootstrap"
+echo "======================================"
 
-echo ""
-echo "== Systeem update =="
+### -------------------------
+### UPDATE
+### -------------------------
+
 sudo apt update
 sudo apt upgrade -y
 
-echo ""
-echo "== i386 architectuur voor Steam/Wine =="
+### -------------------------
+### ARCH SUPPORT (Steam/Wine)
+### -------------------------
+
 sudo dpkg --add-architecture i386
 sudo apt update
 
-echo ""
-echo "== Basis packages =="
+### -------------------------
+### BASE TOOLS
+### -------------------------
+
 sudo apt install -y \
 curl wget gnupg ca-certificates \
 software-properties-common \
 apt-transport-https \
 build-essential
 
-echo ""
-echo "== Media & creators =="
+### -------------------------
+### MEDIA & CREATION
+### -------------------------
+
 sudo apt install -y \
 torbrowser-launcher \
 vlc mpv celluloid haruna \
 kdenlive obs-studio \
 ffmpeg handbrake audacity
 
-echo ""
-echo "== Gaming basis =="
-sudo apt install -y steam
+### -------------------------
+### GAMING
+### -------------------------
 
-echo ""
-echo "== Lutris officiële repository =="
+sudo apt install -y steam
 sudo add-apt-repository -y ppa:lutris-team/lutris
 sudo apt update
 sudo apt install -y lutris
 
-echo ""
-echo "== Office =="
+### -------------------------
+### OFFICE
+### -------------------------
+
 sudo apt install -y libreoffice
 
-echo ""
-echo "== Security (ClamAV + GUI) =="
-sudo apt install -y clamav clamtk
-sudo systemctl enable clamav-freshclam || true
-sudo systemctl start clamav-freshclam || true
+### -------------------------
+### SECURITY
+### -------------------------
 
-echo ""
-echo "== Netwerk & sync =="
+sudo apt install -y clamav clamtk
+sudo freshclam || true
+
+### -------------------------
+### NETWORK & SYNC
+### -------------------------
+
 sudo apt install -y \
-transmission \
-syncthing \
-nextcloud-desktop \
+transmission syncthing nextcloud-desktop \
 nmap
 
-echo ""
-echo "== Systeem tools =="
-sudo apt install -y \
-timeshift \
-kdeconnect \
-gparted \
-gnome-tweaks \
-flameshot \
-bleachbit \
-flatpak \
-fsearch \
-cpu-x
+### -------------------------
+### SYSTEM TOOLS
+### -------------------------
 
-echo ""
-echo "== Developer tools =="
+sudo apt install -y \
+timeshift kdeconnect \
+gparted gnome-tweaks \
+flameshot bleachbit \
+flatpak fsearch cpu-x
+
+### -------------------------
+### DEV TOOLS
+### -------------------------
+
 sudo apt install -y \
 git lazygit micro \
 ripgrep fd-find jq bat
 
-echo ""
-echo "== Node.js LTS (NodeSource) =="
+### -------------------------
+### NODE LTS
+### -------------------------
+
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt install -y nodejs
 
-echo ""
-echo "Node versie:"
+echo "Node installed:"
 node -v
 npm -v
 
-echo ""
-echo "== Flatpak Flathub repo =="
+### -------------------------
+### FLATPAK
+### -------------------------
+
 sudo flatpak remote-add --if-not-exists flathub \
 https://flathub.org/repo/flathub.flatpakrepo
 
-echo ""
-echo "== Optionele host tools (uitgeschakeld) =="
+### -------------------------
+### DRIVER & FIRMWARE CHECK
+### -------------------------
+
+sudo apt install -y fwupd || true
+sudo fwupdmgr refresh || true
+sudo fwupdmgr get-updates || true
+sudo ubuntu-drivers autoinstall || true
+
+### -------------------------
+### TIMESHIFT SNAPSHOT
+### -------------------------
+
+sudo timeshift --create \
+--comments "Post-bootstrap snapshot" \
+--tags D || true
+
+### -------------------------
+### WALLPAPER (Cinnamon)
+### -------------------------
+
+WALL="/usr/share/backgrounds/linuxmint/default_background.jpg"
+
+if [ -f "$WALL" ]; then
+  gsettings set org.cinnamon.desktop.background picture-uri "file://$WALL" || true
+fi
+
+### -------------------------
+### CLEANUP
+### -------------------------
+
+flatpak update -y || true
+sudo apt autoremove -y
+sudo apt autoclean
+
+### -------------------------
+### OPTIONAL HOST TOOLS
+### -------------------------
+
 # sudo apt install -y virtualbox
 # sudo apt install -y virt-manager
 
-echo ""
-echo "== Cleanup =="
-sudo apt autoremove -y
+### -------------------------
+### DONE
+### -------------------------
 
 echo ""
-echo "=============================="
-echo " Bootstrap voltooid"
-echo "=============================="
+echo "======================================"
+echo " Installatie voltooid"
+echo "======================================"
+
+read -p "Nu herstarten? (y/n): " answer
+if [ "$answer" = "y" ]; then
+  sudo reboot
+fi
