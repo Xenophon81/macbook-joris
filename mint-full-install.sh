@@ -61,6 +61,30 @@ echo "=== 1Password installed ==="
 
 
 
+echo "=== Install 1Password ==="
+
+# keyring map
+sudo mkdir -p /etc/apt/keyrings
+
+# GPG sleutel importeren
+curl -sS https://downloads.1password.com/linux/keys/1password.asc \
+ | sudo gpg --dearmor --output /etc/apt/keyrings/1password.gpg
+
+# repo toevoegen
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/1password.gpg] https://downloads.1password.com/linux/debian/$(dpkg --print-architecture) stable main" \
+ | sudo tee /etc/apt/sources.list.d/1password.list > /dev/null
+
+# package lijst verversen
+sudo apt update
+
+# installeren
+sudo apt install -y 1password
+
+echo "=== 1Password installed ==="
+
+
+
+
 
 
 #!/usr/bin/env bash
